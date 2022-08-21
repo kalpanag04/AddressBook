@@ -9,13 +9,16 @@ namespace AddressBook
     interface IOperationalMethods
     {
         public void Listview(List<Contacts> contactsList);
-        public Contacts NewContact();
+        public Contacts NewContact(List<Contacts> contactsList);
         public void DeleteContact(List<Contacts> contactsList);
         public void EditContact(List<Contacts> contactsList);
     }
     class ContactView : IOperationalMethods
     {
         public Contacts Person3 = new Contacts();
+        /// <summary>
+        /// Display Contact details template.
+        /// </summary>
         public void Listview(List<Contacts> contactsList)
         {
             try
@@ -40,12 +43,15 @@ namespace AddressBook
                 Console.WriteLine(e.Message);
             }
         }
-        public Contacts NewContact()
+        /// <summary>
+        /// New contact method - ask user to enter all details. using console
+        /// </summary>
+        public Contacts NewContact(List<Contacts> contactsList)
         {
             try
             {
                 //global object 'Person3' is used.//
-                CustomInput(Person3);
+                CustomInput(Person3, contactsList);
                 //validating contact details
                 Person3.ValidateContactDetails();
                 //adding contact to list
@@ -59,6 +65,13 @@ namespace AddressBook
             }
             return null;
         }
+
+        /// <summary>
+        /// delete a contact method using an index of list entered by user.
+        /// check for contacts available in list
+        /// if no contacts display message and end.
+        /// else ask for delete using index of list.
+        /// </summary>
         public void DeleteContact(List<Contacts> contactsList)
         {
             try
@@ -92,6 +105,10 @@ namespace AddressBook
                 Console.WriteLine(e.Message);
             }
         }
+        /// <summary>
+        /// edit a contact using a index ask ask for details and replace
+        /// the details with appropriate details.
+        /// </summary>
         public void EditContact(List<Contacts> contactsList)
         {
             try
@@ -121,7 +138,7 @@ namespace AddressBook
                     CustomView(sel, contactsList);
                     Console.WriteLine("Enter new Details");
                     //global object 'Person3' is used.//
-                    CustomInput(Person3);
+                    CustomInput(Person3, contactsList);
                     //validating contact details
                     Person3.ValidateContactDetails();
                     //removing contact
@@ -139,6 +156,12 @@ namespace AddressBook
                 Console.WriteLine(e.Message);
             }
         }
+
+        /// <summary>
+        /// custom display template for edit contact 
+        /// sel- is parameter that passes appropriate selected contact index.
+        /// </summary>
+        /// <param name="sel"></param>
         private void CustomView(int sel, List<Contacts> contactsList)
         {
             Console.WriteLine();
@@ -150,11 +173,20 @@ namespace AddressBook
             Console.WriteLine();
         }
 
-        public void CustomInput(Contacts Person)
+        public void CustomInput(Contacts Person, List<Contacts> contactsList)
         {
             Console.WriteLine("Add a new contact.");
             Console.WriteLine("Enter First Name: ");
             Person.FirstName = Console.ReadLine();
+            //ability to check for duplicate entry of same person in particular addressBook
+            foreach (Contacts contacts in contactsList)
+            {
+                while (contacts.FirstName.Contains(Person.FirstName))
+                {
+                    Console.WriteLine("Name already exists in Contacts \n enter new name: ");
+                    Person.FirstName = Console.ReadLine();
+                }
+            }
             Console.WriteLine("Enter Last Name: ");
             Person.LastName = Console.ReadLine();
             Console.WriteLine("Enter Address: ");

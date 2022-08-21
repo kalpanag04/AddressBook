@@ -13,10 +13,19 @@ namespace AddressBook
         {
             dtAddressbook = new Dictionary<string, List<Contacts>>();
         }
+        /// <summary>
+        /// ability to return addressBook Dictionary
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<string, List<Contacts>> GetAddressBook()
         {
             return dtAddressbook;
         }
+        /// <summary>
+        /// create a new address book check for name,
+        /// if already exists then, wont create new.
+        /// </summary>
+        /// <param name="name"></param>
         public bool AddAddressBook(string name)
         {
             //check for addressbook name
@@ -37,7 +46,7 @@ namespace AddressBook
                     case 'Y':
 
                         ContactView contact = new ContactView();
-                        Contacts newContact = contact.NewContact();
+                        Contacts newContact = contact.NewContact(contactsList);
                         if (newContact != null)
                         {
                             contactsList.Add(newContact);
@@ -53,6 +62,9 @@ namespace AddressBook
                 return true;
             }
         }
+        /// <summary>
+        /// view all addressbooks present.
+        /// </summary>
         public string ViewAddressBooks()
         {
             if (dtAddressbook.Count == 0)
