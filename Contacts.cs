@@ -94,7 +94,6 @@ namespace AddressBook
             {
                 Console.WriteLine("Error in Saving Details");
             }
-
         }
     }
 }
