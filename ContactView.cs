@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace AddressBook
 {
-
     interface IOperationalMethods
     {
         public void ContactViewMethod();
@@ -19,7 +18,7 @@ namespace AddressBook
     class ContactView : IOperationalMethods
     {
         public static List<Contacts> contactsList = new List<Contacts>();
-
+        public Contacts Person3 = new Contacts();
         public void ContactViewMethod()
         {
             Contacts Person1 = new Contacts
@@ -46,13 +45,10 @@ namespace AddressBook
             };
             Person1.ValidateContactDetails();
             Person2.ValidateContactDetails();
-
             //storing contact details to List
             contactsList.Add(Person1);
             contactsList.Add(Person2);
-
         }
-
         public void Listview()
         {
             try
@@ -76,30 +72,13 @@ namespace AddressBook
             {
                 Console.WriteLine(e.Message);
             }
-
         }
-      public void NewContact()
+        public void NewContact()
         {
             try
             {
-                Contacts Person3 = new Contacts();
-                Console.WriteLine("Add a new contact.");
-                Console.WriteLine("Enter First Name: ");
-                Person3.FirstName = Console.ReadLine();
-                Console.WriteLine("Enter Last Name: ");
-                Person3.LastName = Console.ReadLine();
-                Console.WriteLine("Enter Address: ");
-                Person3.Address = Console.ReadLine();
-                Console.WriteLine("Enter City: ");
-                Person3.City = Console.ReadLine();
-                Console.WriteLine("Enter State: ");
-                Person3.State = Console.ReadLine();
-                Console.WriteLine("Enter ZipCode: ");
-                Person3.ZipCode = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Enter Phone Number: ");
-                Person3.PhoneNumber = Convert.ToInt64(Console.ReadLine());
-                Console.WriteLine("Enter Email: ");
-                Person3.Email = Console.ReadLine();
+                //global object 'Person3' is used.//
+                CustomInput(Person3);
                 //validating contact details
                 Person3.ValidateContactDetails();
                 //adding contact to list
@@ -111,8 +90,7 @@ namespace AddressBook
                 Console.WriteLine("New contact entry aborted.");
             }
         }
-
-       public void DeleteContact()
+        public void DeleteContact()
         {
             try
             {
@@ -126,7 +104,6 @@ namespace AddressBook
                     Console.WriteLine("Select the contact you want to Delete : ");
                     foreach (Contacts contacts in ContactView.contactsList)
                     {
-
                         Console.WriteLine($" press {i} for {contacts.FirstName}");
                         i++;
                     }
@@ -146,7 +123,7 @@ namespace AddressBook
                 Console.WriteLine(e.Message);
             }
         }
-      public void EditContact()
+        public void EditContact()
         {
             try
             {
@@ -174,24 +151,8 @@ namespace AddressBook
                     Console.WriteLine("-------Before editing-------");
                     CustomView(sel);
                     Console.WriteLine("Enter new Details");
-                    Contacts Person3 = new Contacts();
-                    Console.WriteLine("Add a new contact.");
-                    Console.WriteLine("Enter First Name: ");
-                    Person3.FirstName = Console.ReadLine();
-                    Console.WriteLine("Enter Last Name: ");
-                    Person3.LastName = Console.ReadLine();
-                    Console.WriteLine("Enter Address: ");
-                    Person3.Address = Console.ReadLine();
-                    Console.WriteLine("Enter City: ");
-                    Person3.City = Console.ReadLine();
-                    Console.WriteLine("Enter State: ");
-                    Person3.State = Console.ReadLine();
-                    Console.WriteLine("Enter ZipCode: ");
-                    Person3.ZipCode = Convert.ToInt32(Console.ReadLine());
-                    Console.WriteLine("Enter Phone Number: ");
-                    Person3.PhoneNumber = Convert.ToInt64(Console.ReadLine());
-                    Console.WriteLine("Enter Email: ");
-                    Person3.Email = Console.ReadLine();
+                    //global object 'Person3' is used.//
+                    CustomInput(Person3);
                     //validating contact details
                     Person3.ValidateContactDetails();
                     //removing contact
@@ -200,7 +161,6 @@ namespace AddressBook
                     contactsList.Insert(sel, Person3);
                     Console.WriteLine();
                     Console.WriteLine("Contact edit successful!!");
-
                     Console.WriteLine("-------After editing-------");
                     CustomView(sel);
                 }
@@ -211,7 +171,45 @@ namespace AddressBook
             }
         }
 
-        private void CustomView(int sel)
+        private List<Contacts> tempContactList = new List<Contacts>();
+        public void MultipleContact()
+        {
+            try
+            {
+                char input = AddPersonOption();
+                input = Char.ToUpper(input);
+                switch (input)
+                {
+                    case 'Y':
+                        CustomInput(Person3);
+                        Person3.ValidateContactDetails();
+                        tempContactList.Add(Person3);
+                        MultipleContact();
+                        break;
+                    case 'N':
+                        contactsList.AddRange(tempContactList);
+                        break;
+                    default:
+                        Console.WriteLine("Invalid input. enter valid choice.");
+                        MultipleContact();
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        private char AddPersonOption()
+        {
+            Console.WriteLine("Add another Person?");
+            Console.WriteLine("type Y/y for YES.");
+            Console.WriteLine("type N/n for NO");
+            char input = Convert.ToChar(Console.ReadLine());
+            return input;
+        }
+       private void CustomView(int sel)
         {
             Console.WriteLine();
             Console.WriteLine("Contacts");
@@ -221,6 +219,53 @@ namespace AddressBook
             Console.WriteLine($"Address: {contactsList[sel].Address}, \n \t{contactsList[sel].City}, {contactsList[sel].State}, {contactsList[sel].ZipCode}");
             Console.WriteLine();
         }
+
+        public void CustomInput(Contacts Person)
+        {
+            Console.WriteLine("Add a new contact.");
+            Console.WriteLine("Enter First Name: ");
+            Person.FirstName = Console.ReadLine();
+            Console.WriteLine("Enter Last Name: ");
+            Person.LastName = Console.ReadLine();
+            Console.WriteLine("Enter Address: ");
+            Person.Address = Console.ReadLine();
+            Console.WriteLine("Enter City: ");
+            Person.City = Console.ReadLine();
+            Console.WriteLine("Enter State: ");
+            Person.State = Console.ReadLine();
+            Console.WriteLine("Enter ZipCode: ");
+            var input = Console.ReadLine();
+            while (true)
+            {
+                if (Int32.TryParse(input, out _))
+                {
+                    Person.ZipCode = Convert.ToInt32(input);
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("invalid Input!! try again.");
+                    input = Console.ReadLine();
+                }
+            }
+            Console.WriteLine("Enter Phone Number: ");
+            input = Console.ReadLine();
+            while (true)
+            {
+                if (Int64.TryParse(input, out _))
+                {
+                    Person.PhoneNumber = Convert.ToInt64(input);
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("invalid Input!! try again.");
+                    input = Console.ReadLine();
+                }
+            }
+            Console.WriteLine("Enter Email: ");
+            Person.Email = Console.ReadLine();
+        }
     }
-    
+
 }
